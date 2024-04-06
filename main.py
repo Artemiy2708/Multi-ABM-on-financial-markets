@@ -2,7 +2,6 @@ import pandas as pd
 
 import AgentBasedModel
 import random
-
 import json
 
 from AgentBasedModel import plot_price_fundamental, plot_arbitrage, plot_price, plot_dividend, plot_orders, utils
