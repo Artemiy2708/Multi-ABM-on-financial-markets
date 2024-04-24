@@ -21,6 +21,7 @@ colors = [
     (23, 190, 207),  # cyan
 ]
 
+
 colors = [(r / 255.0, g / 255.0, b / 255.0) for r, g, b in colors]
 
 
