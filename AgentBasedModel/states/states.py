@@ -24,7 +24,7 @@ def aggToShock(sim: Simulator, window: int, funcs: list) -> dict:
     } for f_name, f in funcs} for event in sim.events}
 
 
-def test_trend_kendall(values, category: bool = False, conf: float = .95) -> bool or dict:
+def test_trend_kendall(values: list, category: bool = False, conf: float = .95) -> bool or dict:
     """
     Kendall’s Tau test.
     H0: No trend exists
