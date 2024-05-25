@@ -2,28 +2,31 @@ import pandas as pd
 
 import AgentBasedModel
 import random
+
 import json
 
-from AgentBasedModel import plot_price_fundamental, plot_arbitrage, plot_price, plot_dividend, plot_orders, utils
+from AgentBasedModel import plot_price_fundamental, plot_arbitrage, plot_price, plot_dividend, plot_orders, utils,StopTrading
 from AgentBasedModel.utils import logging
 
-with open("config.json", "r", encoding="utf-8") as f:
-    config = json.loads(f.read())
-logging.Logger.info(f"Config: {json.dumps(config)}")
+# with open("config.json", "r", encoding="utf-8") as f:
+#     config = json.loads(f.read())
+# logging.Logger.info(f"Config: {json.dumps(config)}")
 
-configs = AgentBasedModel.utils.generate_configs(iterations=2000)
-with open(f"output/scenarios.json", "w", encoding="utf-8") as f:
-    f.write(json.dumps(configs))
+configs = AgentBasedModel.utils.generate_configs(iterations=200)
+# with open(f"output/scenarios.json", "w", encoding="utf-8") as f:
+print(type(configs))
+#     f.write(json.dumps(configs))
 for scenario, scenario_configs in configs.items():
-    AgentBasedModel.utils.logging.Logger.error(f"Scenario: {scenario}. Configs: [{len(scenario_configs)}]")
+    # AgentBasedModel.utils.logging.Logger.error(f"Scenario: {scenario}. Configs: [{len(scenario_configs)}]")
     events_dfs = []
     for config_i, config in enumerate(scenario_configs):
         AgentBasedModel.ExchangeAgent.id = 0
         AgentBasedModel.Trader.id = 0
-        AgentBasedModel.utils.logging.Logger.error(f"Config: #{config_i}")
+        # AgentBasedModel.utils.logging.Logger.error(f"Config: #{config_i}")
         exchanges = []
         traders = []
         events = []
+        print(config)
 
         for exchange in config["exchanges"]:
             exchanges.append(AgentBasedModel.ExchangeAgent(**exchange))
@@ -37,12 +40,17 @@ for scenario, scenario_configs in configs.items():
                     getattr(AgentBasedModel.agents, trader["type"])(**params) for _ in range(trader["count"])
                 ]
             )
+            print(config['events'])
         for event in config["events"]:
+            print(event)
             params = dict(**event)
             params.pop("type")
             events.append(
                 getattr(AgentBasedModel.events, event["type"])(**params)
             )
+            #stop_event = StopTrading(it=100, exchange_id=0)
+            #events.append(stop_event)
+            print(events)
         simulator = AgentBasedModel.Simulator(**{
             'exchanges': exchanges,
             'traders': traders,
@@ -58,13 +66,13 @@ for scenario, scenario_configs in configs.items():
             # df = AgentBasedModel.utils.export.make_df(info=info_dict, config=config)
             # df.to_csv(f"output/info/csv/{config_i}_{_}.csv", index=False)
 
-            events_dfs.append(AgentBasedModel.utils.make_event_df(info=infos[_], config=config))
+            # events_dfs.append(AgentBasedModel.utils.make_event_df(info=infos[_], config=config))
 
-            plot_price_fundamental(infos[_], save_path=f"output/plots/{config_i}_price_fundamental_{_}.png")
-            plot_arbitrage(infos[_], save_path=f"output/plots/{config_i}_arbitrage_{_}.png")
-            plot_price(infos[_], save_path=f"output/plots/{config_i}_price_{_}.png")
-            plot_dividend(infos[_], save_path=f"output/plots/{config_i}_dividend_{_}.png")
-            plot_orders(infos[_], save_path=f"output/plots/{config_i}_orders_{_}.png")
+            plot_price_fundamental(infos[_])
+            plot_arbitrage(infos[_])
+            plot_price(infos[_])
+            plot_dividend(infos[_])
+            plot_orders(infos[_])
     events_dfs = pd.concat(events_dfs)
     events_dfs.to_csv(f"output/scenarios/{scenario}.csv", index=False)
 # config = configs[]
