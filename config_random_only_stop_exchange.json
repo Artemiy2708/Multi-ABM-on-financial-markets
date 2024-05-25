@@ -1,0 +1,63 @@
+{
+  "exchanges": [
+    {
+      "volume": 3000
+    },
+    {
+      "volume": 3000
+    }
+  ],
+  "traders": [
+    {
+      "count": 10,
+      "type": "Random",
+      "markets": [
+        0
+      ],
+      "cash": 1000,
+      "assets": [
+        0
+      ]
+    },
+    {
+      "count": 10,
+      "type": "Random",
+      "markets": [
+        1
+      ],
+      "cash": 1000,
+      "assets": [
+        0
+      ]
+    },
+    {
+      "count": 10,
+      "type": "MarketMaker",
+      "cash": 10000,
+      "markets": [
+        0,
+        1
+      ],
+      "softlimits": [
+        100,
+        100
+      ],
+      "assets": [
+        0,
+        0
+      ]
+    }
+  ],
+  "events": [
+    {
+      "type": "StopTrading",
+      "it": 50,
+      "price_change_zero": 0,
+      "stock_id": 0
+    }
+  ],
+  "size": 10,
+  "window": 5,
+  "stability_threshold": 5,
+  "iterations": 100
+}
