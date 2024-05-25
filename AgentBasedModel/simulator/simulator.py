@@ -36,6 +36,9 @@ class Simulator:
 
     def simulate(self, n_iter: int, silent=False) -> object:
         for it in tqdm(range(n_iter), desc='Simulation', disable=silent):
+            # if it >=50:
+            #     return self.info[_].capture()
+            # print (self.exchanges)
             # Call scenario
             if self.events:
                 for event in self.events:
@@ -65,7 +68,6 @@ class Simulator:
                 self.exchanges[_].generate_dividend()
 
         return self
-
 
 
 class SimulatorInfo:
@@ -208,9 +210,6 @@ class SimulatorInfo:
         return rolling(liq, roll) if roll else mean(liq)
 
     def to_dict(self, config: Dict) -> dict:
-        # states = [state for state in AgentBasedModel.states.general_states(self, config['size'], config['window']) for _
-        #           in range(config['window'])]
-        # states += ['stable'] * (len(self.prices) - len(states))
         states = AgentBasedModel.states.general_states(self, config['size'], config['window'])
         return {
             'prices': self.prices,
@@ -223,7 +222,6 @@ class SimulatorInfo:
             'sentiments': self.sentiments,
             'returns': self.returns,
             'states': states,
-            # 'traders': self.traders,
             'available_traders': self.available_traders,
             'events': [event.to_dict() for event in self.events],
         }
