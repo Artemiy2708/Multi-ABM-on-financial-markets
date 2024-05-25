@@ -4,7 +4,7 @@ from typing import Optional, Dict, Any
 import numpy as np
 import pandas as pd
 
-from AgentBasedModel.utils import math, Logger
+from AgentBasedModel.utils import math
 
 
 def make_df(json_path: str = "info_0.json", info: Optional[Dict] = None, config: Dict = None) -> pd.DataFrame:
@@ -55,8 +55,8 @@ def make_event_df(info: Any = None, config: Dict = None):
     traders["fundamentalist"] = len(list(filter(lambda x: "Fundamentalist" in x, available_traders)))
     for event in events:
         state_it = event['it'] // config['size'] - 1
-        Logger.info(state_it)
-        Logger.info(event['it'])
+        # Logger.info(state_it)
+        # Logger.info(event['it'])
         is_recovered = False
         c = 0
         C = 0  # number of iterations until recover (right side)
@@ -79,8 +79,8 @@ def make_event_df(info: Any = None, config: Dict = None):
         else:
             shock_st_right = (state_it + 1) * config['size'] + config['window']  # right bound of interval of shock
             time_to_recover = (shock_st_right - event['it']) + C * config['size']  # right side of last window
-            Logger.info(shock_st_right)
-            Logger.info(time_to_recover)
+            # Logger.info(shock_st_right)
+            # Logger.info(time_to_recover)
         # Price, Return metrics
         prices = info_dict['prices'][1:]
         returns = info.stock_returns(1)
