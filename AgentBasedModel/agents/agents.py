@@ -31,7 +31,7 @@ class ExchangeAgent:
         self.risk_free = rf
         self.transaction_cost = transaction_cost
         self._fill_book(price, std, volume, rf * price)  # initialise both order book and dividend book
-        logging.Logger.info(f"{self.name}")
+        # logging.Logger.info(f"{self.name}")
 
     def generate_dividend(self):
         """
@@ -179,7 +179,7 @@ class Trader:
 
         self.cash = cash
         self.assets = assets
-        logging.Logger.info(f"{self.name} {len(assets)}")
+        # logging.Logger.info(f"{self.name} {len(assets)}")
 
     def __str__(self) -> str:
         return f'{self.name} ({self.type})'
@@ -219,7 +219,7 @@ class Trader:
                 mn_index = _
         if market is not None:
             mn_index = market
-        logging.Logger.info(f"{self.name} ({self.type}) BUY {mn_index}/{len(self.markets)}")
+        # logging.Logger.info(f"{self.name} ({self.type}) BUY {mn_index}/{len(self.markets)}")
         order = Order(self.markets[mn_index].order_book['ask'].last.price, round(quantity), 'bid', mn_index, self)
         return self.markets[mn_index].market_order(order).qty
 
@@ -239,7 +239,7 @@ class Trader:
                 mx_index = _
         if market is not None:
             mx_index = market
-        logging.Logger.info(f"{self.name} ({self.type}) SELL {mx_index}/{len(self.markets)}")
+        # logging.Logger.info(f"{self.name} ({self.type}) SELL {mx_index}/{len(self.markets)}")
         order = Order(self.markets[mx_index].order_book['bid'].last.price, round(quantity), 'ask', mx_index, self)
         return self.markets[mx_index].market_order(order).qty
 
@@ -619,7 +619,7 @@ class MarketMaker(Trader):
         self.prev_cash = cash
 
     def call(self):
-        logging.Logger.info(f"Market Maker {self.id} PnL {self.cash - self.prev_cash}. Cash: {self.cash}")
+        # logging.Logger.info(f"Market Maker {self.id} PnL {self.cash - self.prev_cash}. Cash: {self.cash}")
         # Clear previous orders
         for order in self.orders.copy():
             self._cancel_order(order)
@@ -640,9 +640,9 @@ class MarketMaker(Trader):
             ask_volume = max(0, (self.assets[i] - 1 - self.lls[i]) // 2)
             bid_price = spread['bid'] + base_offset
             ask_price = spread['ask'] - base_offset
-            logging.Logger.info(f"Market Maker {self.id}. Exchange: {i}. Ask: {ask_volume}. Bid: {bid_volume}")
+            # logging.Logger.info(f"Market Maker {self.id}. Exchange: {i}. Ask: {ask_volume}. Bid: {bid_volume}")
             # if not bid_volume or not ask_volume:
-            logging.Logger.info(f"Market Maker {self.id} panic")
+            # logging.Logger.info(f"Market Maker {self.id} panic")
             self.panic = True
 
             # NORMAL MAKER START
@@ -656,8 +656,8 @@ class MarketMaker(Trader):
             # RANDOM MAKER END
             self._buy_limit(bid_volume, bid_price, i)
             self._sell_limit(ask_volume, ask_price, i)
-            logging.Logger.info(f"Market Maker {self.id} ASKS: {ask_volumes}")
-            logging.Logger.info(f"Market Maker {self.id} BIDS: {bid_volumes}")
+            # logging.Logger.info(f"Market Maker {self.id} ASKS: {ask_volumes}")
+            # logging.Logger.info(f"Market Maker {self.id} BIDS: {bid_volumes}")
             # else:
             #     logging.Logger.info(f"Market Maker {self.id} chill")
             # Calculate spread and price offset for each market
