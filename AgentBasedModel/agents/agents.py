@@ -619,95 +619,16 @@ class MarketMaker(Trader):
         self.prev_cash = cash
 
     def call(self):
-        # logging.Logger.info(f"Market Maker {self.id} PnL {self.cash - self.prev_cash}. Cash: {self.cash}")
-        # Clear previous orders
         for order in self.orders.copy():
             self._cancel_order(order)
-
-        # Calculate total bid and ask volume for all markets
-        bid_volumes = []
-        ask_volumes = []
         for i in range(len(self.markets)):
-            # bid_volume = max(0, (self.uls[i] - 1 - self.assets[i]) // 2)
-            # ask_volume = max(0, (self.assets[i] - 1 - self.uls[i]) // 2)
-            # bid_volume = max(0, (self.uls[i] - 1 - self.assets[i]) // 2)
-            # ask_volume = max(0, (self.assets[i] - 1 - self.uls[i]) // 2)
-            # ask_volumes.append(ask_volume)
-            # bid_volumes.append(bid_volume)
             spread = self.markets[i].spread()
             base_offset = min(1, (spread['ask'] - spread['bid']) * (self.assets[i] / self.lls[i]))
             bid_volume = max(0, (self.uls[i] - 1 - self.assets[i]) // 2)
             ask_volume = max(0, (self.assets[i] - 1 - self.lls[i]) // 2)
             bid_price = spread['bid'] + base_offset
             ask_price = spread['ask'] - base_offset
-            # logging.Logger.info(f"Market Maker {self.id}. Exchange: {i}. Ask: {ask_volume}. Bid: {bid_volume}")
-            # if not bid_volume or not ask_volume:
-            # logging.Logger.info(f"Market Maker {self.id} panic")
             self.panic = True
-
-            # NORMAL MAKER START
-            # self._buy_market(bid_volume, i) if ask_volume == 0 else None
-            # self._sell_market(ask_volume, i) if bid_volume == 0 else None
-            # NORMAL MAKER END
-
-            # RANDOM MAKER START
-            # self._buy_market(ask_volumes) if total_ask_volume == 0 else None
-            # self._sell_market(bid_volumes) if total_bid_volume == 0 else None
-            # RANDOM MAKER END
             self._buy_limit(bid_volume, bid_price, i)
             self._sell_limit(ask_volume, ask_price, i)
-            # logging.Logger.info(f"Market Maker {self.id} ASKS: {ask_volumes}")
-            # logging.Logger.info(f"Market Maker {self.id} BIDS: {bid_volumes}")
-            # else:
-            #     logging.Logger.info(f"Market Maker {self.id} chill")
-            # Calculate spread and price offset for each market
-            # for i in range(len(self.markets)):
-            #     spread = self.markets[i].spread()
-            #     base_offset = min(1, (spread['ask'] - spread['bid']) * (self.assets[i] / self.lls[i]))
-            #     bid_volume = max(0, (self.uls[i] - 1 - self.assets[i]) // 2)
-            #     ask_volume = max(0, (self.assets[i] - 1 - self.lls[i]) // 2)
-            #     bid_price = spread['bid'] + base_offset
-            #     ask_price = spread['ask'] - base_offset
-            #     self._buy_limit(bid_volume, bid_price, i)
-            #     self._sell_limit(ask_volume, ask_price, i)
-            # self.panic = False
         self.prev_cash = self.cash
-    # def call(self):
-    #     logging.LOGGER.info("PnL", self.cash - self.prev_cash, f"{self.cash}")
-    #     # Clear previous orders
-    #     for order in self.orders.copy():
-    #         self._cancel_order(order)
-    #
-    #     # Calculate total bid and ask volume for all markets
-    #     total_bid_volume = 0
-    #     total_ask_volume = 0
-    #     for i in range(len(self.markets)):
-    #         bid_volume = max(0, (self.uls[i] - 1 - self.assets[i]) // 2)
-    #         ask_volume = max(0, (self.assets[i] - 1 - self.lls[i]) // 2)
-    #         total_bid_volume += bid_volume
-    #         total_ask_volume += ask_volume
-    #
-    #     # If in panic state we only either sell or buy commodities
-    #     if not total_bid_volume or not total_ask_volume:
-    #         self.panic = True
-    #         if total_ask_volume == 0:
-    #             # Sell all assets
-    #             sell_volume = sum(self.assets)
-    #             self._sell_market(sell_volume)
-    #         if total_bid_volume == 0:
-    #             # Buy as much as possible based on soft limits
-    #             buy_volume = sum(self.uls) + sum(self.lls)
-    #             self._buy_market(buy_volume)
-    #     else:
-    #         # Calculate spread and price offset for each market
-    #         for i in range(len(self.markets)):
-    #             spread = self.markets[i].spread()
-    #             base_offset = min(1, (spread['ask'] - spread['bid']) * (self.assets[i] / self.lls[i]))
-    #             bid_volume = max(0, (self.uls[i] - 1 - self.assets[i]) // 2)
-    #             ask_volume = max(0, (self.assets[i] - 1 - self.lls[i]) // 2)
-    #             bid_price = spread['bid'] + base_offset
-    #             ask_price = spread['ask'] - base_offset
-    #             self._buy_limit(bid_volume, bid_price, i)
-    #             self._sell_limit(ask_volume, ask_price, i)
-    #         self.panic = False
-    #     self.prev_cash = self.cash
