@@ -89,7 +89,8 @@ class MarketPriceShock(Event):
             return
         book = self.simulator.exchanges[self.stock_id].order_book
         for order in chain(*book.values()):
-            order.price += round(self.dp, 1)
+                order.price += round(self.dp, 1)
+
 
 
 class LiquidityShock(Event):
@@ -106,7 +107,6 @@ class LiquidityShock(Event):
         if super().call(it):
             return
         exchanges = self.simulator.exchanges
-        # for _ in range(len(exchanges)):
         pseudo_trader = Trader(exchanges, 1e6, [int(1e4)])
         if self.dv < 0:
             order = Order(exchanges[self.stock_id].order_book['ask'].last.price, abs(self.dv), 'bid', 0, pseudo_trader)
@@ -190,26 +190,20 @@ class TransactionCost(Event):
         self.simulator.exchanges[self.stock_id].transaction_cost = self.cost
 
 class StopTrading(Event):
-    def __init__(self, it: int, exchange_id: int):
+    def __init__(self, it: int, price_change_zero: float, stock_id: int = None):
         super().__init__(it)
-        self.color = colors[8]  # Define a new color for this event
-        self.exchange_id = exchange_id
+        self.color = colors[8]
+        self.dp = round(price_change_zero)
+        self.stock_id = stock_id
 
     def __repr__(self):
-        return f'stop trading (it={self.it}, exchange={self.exchange_id})'
+        return f'stop exchange price shock (it={self.it}, dp={self.dp})'
 
     def call(self, it: int):
         if super().call(it):
             return
-
-        for i, exchange in enumerate(self.simulator.exchanges):
-            if i == self.exchange_id:
-                exchange.trading_stopped = True
-            else:
-                exchange.trading_stopped = False
-
-    def to_dict(self) -> dict:
-        event_dict = super().to_dict()
-        event_dict['exchange_id'] = self.exchange_id
-        return event_dict
+        book = self.simulator.exchanges[self.stock_id].order_book
+        for order in chain(*book.values()):
+            for i in range(10000):
+                order.price += round(self.dp, 1)
 
