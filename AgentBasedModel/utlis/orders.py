@@ -18,8 +18,8 @@ class Order:
         self.trader = trader_link
         self.order_id = Order.order_id
         self.market_id = market_id
-        logging.Logger.info(
-            f"New {self.order_type} ORDER {self.order_id} (x{self.qty} / {self.price}) for {self.market_id} {self.trader.type + ' ' + str(self.trader.id) if self.trader else None}")
+        # logging.Logger.info(
+        #     f"New {self.order_type} ORDER {self.order_id} (x{self.qty} / {self.price}) for {self.market_id} {self.trader.type + ' ' + str(self.trader.id) if self.trader else None}")
         # Connections
         self.left = None
         self.right = None
@@ -245,20 +245,20 @@ class OrderList:
                 if order.trader is not None:
                     order.trader.cash -= tmp_price * tmp_qty * (1 + t_cost)
                     order.trader.assets[order.market_id] += tmp_qty
-                    logging.Logger.info(f"{order.trader.name} ({order.trader.type}) MarketOrder(BID) {order.market_id}")
+                    # logging.Logger.info(f"{order.trader.name} ({order.trader.type}) MarketOrder(BID) {order.market_id}")
                 if val.trader is not None:
                     val.trader.cash += tmp_price * tmp_qty * (1 - t_cost)
-                    logging.Logger.info(f"{val.trader.name} ({val.trader.type}) MarketOrder(BID) {order.market_id}")
+                    # logging.Logger.info(f"{val.trader.name} ({val.trader.type}) MarketOrder(BID) {order.market_id}")
                     val.trader.assets[val.market_id] -= tmp_qty
 
             if order.order_type == 'ask':
                 if order.trader is not None:
                     order.trader.cash += tmp_price * tmp_qty * (1 - t_cost)
-                    logging.Logger.info(f"{order.trader.name} ({order.trader.type}) MarketOrder(ASK) {order.market_id}")
+                    # logging.Logger.info(f"{order.trader.name} ({order.trader.type}) MarketOrder(ASK) {order.market_id}")
                     order.trader.assets[order.market_id] -= tmp_qty
                 if val.trader is not None:
                     val.trader.cash -= tmp_price * tmp_qty * (1 + t_cost)
-                    logging.Logger.info(f"{val.trader.name} ({val.trader.type}) MarketOrder(ASK) {order.market_id}")
+                    # logging.Logger.info(f"{val.trader.name} ({val.trader.type}) MarketOrder(ASK) {order.market_id}")
                     val.trader.assets[val.market_id] += tmp_qty
 
             # Clear remaining
